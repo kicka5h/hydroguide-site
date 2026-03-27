@@ -5,10 +5,10 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import settings
-from app.db import engine
+from app.db import async_session_factory, engine
 from app.middleware.session import SessionMiddleware
 from app.models.database import Base
-from app.routers import health
+from app.routers import analyze, config_router, health
 
 
 @asynccontextmanager
@@ -20,6 +20,9 @@ async def lifespan(app: FastAPI):
     # Create all tables
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
+
+    # Store session factory on app state so middleware can access it
+    app.state.async_session_factory = async_session_factory
 
     yield
 
@@ -48,3 +51,5 @@ app.add_middleware(SessionMiddleware)
 
 # Routers
 app.include_router(health.router)
+app.include_router(config_router.router)
+app.include_router(analyze.router)

@@ -1,0 +1,431 @@
+{
+  "config": {
+    "communication": {
+      "has_4g_coverage": false,
+      "has_nbiot_coverage": false,
+      "has_line_of_sight": false,
+      "requires_two_way_control": false
+    },
+    "facility": {
+      "release_method": "Pipe via intake",
+      "has_fish_passage": true,
+      "minimum_flow_ls": 20.0,
+      "low_conductivity": false,
+      "ice_problems": false,
+      "difficult_access": false,
+      "linear_flow": false,
+      "sediment_or_surge": false
+    },
+    "operations": {
+      "inspections_per_year": 4,
+      "battery_bank_ah": 500.0,
+      "zero_emission_desired": false
+    },
+    "solar": {
+      "panel_wattage_wp": 425.0,
+      "panel_count": 2,
+      "system_efficiency": 0.8,
+      "lifespan_years": 25
+    },
+    "battery": {
+      "voltage_v": 12.8,
+      "max_dod": 0.8,
+      "cycle_lifespan": 6000
+    },
+    "fuel_cell": {
+      "purchase_cost_kr": 88000.0,
+      "power_w": 82.0,
+      "fuel_consumption_l_kwh": 0.9,
+      "fuel_price_kr_l": 75.0,
+      "lifespan_hours": 6500,
+      "annual_maintenance_kr": 100.0
+    },
+    "diesel_generator": {
+      "purchase_cost_kr": 35000.0,
+      "power_w": 6500.0,
+      "fuel_consumption_l_kwh": 0.5,
+      "fuel_price_kr_l": 18.1,
+      "lifespan_hours": 43800,
+      "annual_maintenance_kr": 25000.0
+    },
+    "other_settings": {
+      "co2_factor_methanol": 1.088,
+      "co2_factor_diesel": 2.68,
+      "assessment_horizon_years": 10
+    },
+    "monthly_irradiation": {
+      "jan": 0.11064530284,
+      "feb": 1.02081508839,
+      "mar": 21.44387486665,
+      "apr": 61.43870641884,
+      "may": 79.35391031094,
+      "jun": 79.30232678362,
+      "jul": 80.63345578117,
+      "aug": 71.41789862748,
+      "sep": 37.71410191662,
+      "oct": 3.05505664524,
+      "nov": 0.25973765459,
+      "dec": 0.01700974846
+    },
+    "power_budget": [
+      {
+        "enabled": true,
+        "name": "Victron BMS",
+        "power_w": 0.1,
+        "consumption_wh_day": 2.4000000000000004,
+        "consumption_ah_day": 0.1875,
+        "consumption_wh_week": 16.800000000000004,
+        "consumption_ah_week": 1.3125
+      },
+      {
+        "enabled": true,
+        "name": "VICTRON Lynx Distributor",
+        "power_w": 2.4,
+        "consumption_wh_day": 57.599999999999994,
+        "consumption_ah_day": 4.499999999999999,
+        "consumption_wh_week": 403.19999999999993,
+        "consumption_ah_week": 31.499999999999993
+      },
+      {
+        "enabled": true,
+        "name": "VICTRON Orion TR Omformer DC-DC 12>24V 10A",
+        "power_w": 1.2,
+        "consumption_wh_day": 28.799999999999997,
+        "consumption_ah_day": 2.2499999999999996,
+        "consumption_wh_week": 201.59999999999997,
+        "consumption_ah_week": 15.749999999999996
+      },
+      {
+        "enabled": true,
+        "name": "Victron Cerbo GX - MK2",
+        "power_w": 2.8,
+        "consumption_wh_day": 67.19999999999999,
+        "consumption_ah_day": 5.249999999999999,
+        "consumption_wh_week": 470.3999999999999,
+        "consumption_ah_week": 36.74999999999999
+      },
+      {
+        "enabled": true,
+        "name": "VICTRON SmartSolar MPPT 250/100-TR VE.Can",
+        "power_w": 0.042,
+        "consumption_wh_day": 1.008,
+        "consumption_ah_day": 0.07875,
+        "consumption_wh_week": 7.056,
+        "consumption_ah_week": 0.55125
+      },
+      {
+        "enabled": true,
+        "name": "Siemens FMS5020",
+        "power_w": 6.45,
+        "consumption_wh_day": 154.8,
+        "consumption_ah_day": 12.09375,
+        "consumption_wh_week": 1083.6000000000001,
+        "consumption_ah_week": 84.65625
+      },
+      {
+        "enabled": true,
+        "name": "Teltonika RUT956",
+        "power_w": 7.0,
+        "consumption_wh_day": 168.0,
+        "consumption_ah_day": 13.125,
+        "consumption_wh_week": 1176.0,
+        "consumption_ah_week": 91.875
+      },
+      {
+        "enabled": true,
+        "name": "Efoy Pro 1800",
+        "power_w": 0.5,
+        "consumption_wh_day": 12.0,
+        "consumption_ah_day": 0.9375,
+        "consumption_wh_week": 84.0,
+        "consumption_ah_week": 6.5625
+      },
+      {
+        "enabled": true,
+        "name": "Efoy Fuel Manager FM4",
+        "power_w": 0.0374,
+        "consumption_wh_day": 0.8976000000000001,
+        "consumption_ah_day": 0.07012499999999999,
+        "consumption_wh_week": 6.283200000000001,
+        "consumption_ah_week": 0.49087499999999995
+      },
+      {
+        "enabled": true,
+        "name": "Datalogger",
+        "power_w": 7.0,
+        "consumption_wh_day": 168.0,
+        "consumption_ah_day": 13.125,
+        "consumption_wh_week": 1176.0,
+        "consumption_ah_week": 91.875
+      }
+    ]
+  },
+  "recommended_config": {
+    "measurement_method": "Electromagnetic, orifice plate or ADP flow meter. Pressure cell, bubble tube, float or ultrasound/radar sensor",
+    "communication": "Satellite modem",
+    "logger_recommendation": "2 loggers + backup logger",
+    "energy_monitoring": "No",
+    "secondary_source": "Diesel generator",
+    "secondary_source_power_w": 6500.0,
+    "solar_panel_count": 2,
+    "battery_ah": 500.0,
+    "fuel_consumption_l_yr": 51.3,
+    "ice_adaptation": "Standard",
+    "operational_requirements": "Straight run + laminar flow"
+  },
+  "energy_balance": {
+    "monthly": [
+      {
+        "month": "Jan",
+        "days": 31,
+        "solar_production_kwh": 0.07523880593120001,
+        "energy_balance_kwh": -20.4066347940688,
+        "generator_hours": 3.1394822760105847,
+        "fuel_liters": 10.2033173970344,
+        "fuel_cost_kr": 184.68004488632266
+      },
+      {
+        "month": "Feb",
+        "days": 28,
+        "solar_production_kwh": 0.6941542601052001,
+        "energy_balance_kwh": -17.8056025398948,
+        "generator_hours": 2.739323467676123,
+        "fuel_liters": 8.9028012699474,
+        "fuel_cost_kr": 161.14070298604796
+      },
+      {
+        "month": "Mar",
+        "days": 31,
+        "solar_production_kwh": 14.581834909321998,
+        "energy_balance_kwh": -5.900038690678002,
+        "generator_hours": 0.907698260104308,
+        "fuel_liters": 2.950019345339001,
+        "fuel_cost_kr": 53.39535015063593
+      },
+      {
+        "month": "Apr",
+        "days": 30,
+        "solar_production_kwh": 41.7783203648112,
+        "energy_balance_kwh": 21.9571523648112,
+        "generator_hours": 0.0,
+        "fuel_liters": 0.0,
+        "fuel_cost_kr": 0.0
+      },
+      {
+        "month": "May",
+        "days": 31,
+        "solar_production_kwh": 53.96065901143919,
+        "energy_balance_kwh": 33.47878541143919,
+        "generator_hours": 0.0,
+        "fuel_liters": 0.0,
+        "fuel_cost_kr": 0.0
+      },
+      {
+        "month": "Jun",
+        "days": 30,
+        "solar_production_kwh": 53.925582212861606,
+        "energy_balance_kwh": 34.104414212861606,
+        "generator_hours": 0.0,
+        "fuel_liters": 0.0,
+        "fuel_cost_kr": 0.0
+      },
+      {
+        "month": "Jul",
+        "days": 31,
+        "solar_production_kwh": 54.830749931195605,
+        "energy_balance_kwh": 34.348876331195605,
+        "generator_hours": 0.0,
+        "fuel_liters": 0.0,
+        "fuel_cost_kr": 0.0
+      },
+      {
+        "month": "Aug",
+        "days": 31,
+        "solar_production_kwh": 48.5641710666864,
+        "energy_balance_kwh": 28.0822974666864,
+        "generator_hours": 0.0,
+        "fuel_liters": 0.0,
+        "fuel_cost_kr": 0.0
+      },
+      {
+        "month": "Sep",
+        "days": 30,
+        "solar_production_kwh": 25.645589303301605,
+        "energy_balance_kwh": 5.824421303301605,
+        "generator_hours": 0.0,
+        "fuel_liters": 0.0,
+        "fuel_cost_kr": 0.0
+      },
+      {
+        "month": "Oct",
+        "days": 31,
+        "solar_production_kwh": 2.0774385187632,
+        "energy_balance_kwh": -18.4044350812368,
+        "generator_hours": 2.8314515509595077,
+        "fuel_liters": 9.2022175406184,
+        "fuel_cost_kr": 166.56013748519308
+      },
+      {
+        "month": "Nov",
+        "days": 30,
+        "solar_production_kwh": 0.17662160512119998,
+        "energy_balance_kwh": -19.6445463948788,
+        "generator_hours": 3.022237906904431,
+        "fuel_liters": 9.8222731974394,
+        "fuel_cost_kr": 177.78314487365316
+      },
+      {
+        "month": "Dec",
+        "days": 31,
+        "solar_production_kwh": 0.011566628952800001,
+        "energy_balance_kwh": -20.4703069710472,
+        "generator_hours": 3.1492779955457233,
+        "fuel_liters": 10.2351534855236,
+        "fuel_cost_kr": 185.2562780879772
+      }
+    ],
+    "total_solar_production_kwh": 296.3219266184912,
+    "total_energy_balance_kwh": 55.16438261849121,
+    "total_generator_hours": 15.789471457200678,
+    "total_fuel_liters": 51.315782235902205,
+    "total_fuel_cost_kr": 928.8156584698298
+  },
+  "tco": {
+    "fuel_cell_purchase_kr": 88000.0,
+    "fuel_cell_operating_kr_yr": 6927.630601846797,
+    "fuel_cell_maintenance_kr_yr": 100.0,
+    "fuel_cell_tco_kr": 158276.30601846796,
+    "diesel_purchase_kr": 35000.0,
+    "diesel_operating_kr_yr": 928.8156584698298,
+    "diesel_maintenance_kr_yr": 25000.0,
+    "diesel_tco_kr": 294288.1565846983,
+    "assessment_horizon_years": 10,
+    "recommended_source": "fuel_cell"
+  },
+  "questionnaire": {
+    "communication": [
+      {
+        "field": "has_4g_coverage",
+        "question": "4G coverage at location?",
+        "guidance": "Check Telenor coverage map"
+      },
+      {
+        "field": "has_nbiot_coverage",
+        "question": "NB-IoT coverage at location?",
+        "guidance": "Check Telenor coverage map"
+      },
+      {
+        "field": "has_line_of_sight",
+        "question": "Line of sight < 15 km to base station?",
+        "guidance": "Use a line-of-sight calculator, NKOM.no has a free web solution."
+      },
+      {
+        "field": "requires_two_way_control",
+        "question": "Two-way control required (remote-controlled valve)?",
+        "guidance": "Two-way = requires 4G or satellite"
+      }
+    ],
+    "facility": [
+      {
+        "field": "release_method",
+        "question": "Release method (arrangement)?",
+        "guidance": "NVE Guide 3/2020 Ch. 3–5. Incl. Coanda screens (Ch. 5.4)"
+      },
+      {
+        "field": "has_fish_passage",
+        "question": "Fish passage at intake?",
+        "guidance": "NVE Ch. 5: Extra attraction water + up-/downstream migration"
+      },
+      {
+        "field": "minimum_flow_ls",
+        "question": "Required minimum flow (l/s)?",
+        "guidance": "Specified in the concession (m³/s or l/s)"
+      },
+      {
+        "field": "low_conductivity",
+        "question": "Low conductivity in water?",
+        "guidance": "Pipe only: Yes = ultrasound, No = electromagnetic"
+      },
+      {
+        "field": "ice_problems",
+        "question": "Ice problems at measurement site?",
+        "guidance": "NVE: Ice/sediment affects measurement profile and sensor selection"
+      },
+      {
+        "field": "difficult_access",
+        "question": "Difficult access to intake?",
+        "guidance": "NVE Ch. 9: Affects logger backup and camera requirements"
+      },
+      {
+        "field": "linear_flow",
+        "question": "Linear flow at intended measurement site?",
+        "guidance": "Pipe only: Air affects Doppler/ultrasound. Requires straight run."
+      },
+      {
+        "field": "sediment_or_surge",
+        "question": "Sediment or surge problem?",
+        "guidance": "Yes = bubble tube recommended over pressure cell"
+      }
+    ],
+    "operations": [
+      {
+        "field": "inspections_per_year",
+        "question": "Number of inspections/visits per year?",
+        "guidance": "NVE: min. annual main inspection. ≤4 = 2 loggers. Must be a value between 3–30 days"
+      },
+      {
+        "field": "battery_bank_ah",
+        "question": "Battery bank size (Ah)",
+        "guidance": "Typically 100–500 Ah"
+      },
+      {
+        "field": "zero_emission_desired",
+        "question": "Desired zero-emission (methanol)?",
+        "guidance": "Yes = fuel cell, No = visit frequency determines diesel/methanol"
+      }
+    ]
+  },
+  "technical_comments": {
+    "solar": {
+      "panel_wattage_wp": "From the datasheet for selected panel",
+      "panel_count": "The configurator calculates this",
+      "system_efficiency": "Total system loss incl. cables, inverter, temperature. Typically 75–85%.",
+      "lifespan_years": "Expected lifespan for PV panels"
+    },
+    "battery": {
+      "voltage_v": "System nominal voltage (12V or 24V)",
+      "max_dod": "LiFePO4: 80–90%, Lead-acid: 50%",
+      "cycle_lifespan": "LiFePO4: ~3000–6000, AGM: ~500–1200"
+    },
+    "fuel_cell": {
+      "purchase_cost_kr": "Purchase price excl./incl. VAT per supplier",
+      "power_w": "Nominal power from datasheet (W)",
+      "fuel_consumption_l_kwh": "Methanol fuel consumption per kWh produced",
+      "fuel_price_kr_l": "Market price methanol per liter",
+      "lifespan_hours": "Expected lifespan in operating hours",
+      "annual_maintenance_kr": "Annual service/maintenance fuel cell"
+    },
+    "diesel_generator": {
+      "purchase_cost_kr": "Purchase price excl./incl. VAT per supplier",
+      "power_w": "Nominal power from datasheet (W)",
+      "fuel_consumption_l_kwh": "Diesel fuel consumption per kWh produced",
+      "fuel_price_kr_l": "Market price diesel per liter",
+      "lifespan_hours": "Expected lifespan in operating hours",
+      "annual_maintenance_kr": "Incl. oil change, filter, service"
+    },
+    "other_settings": {
+      "co2_factor_methanol": "44/32 × density 0.791",
+      "co2_factor_diesel": "ADEME / IPCC standard",
+      "assessment_horizon_years": "Number of years for TCO comparison. Typically 1–10 years."
+    },
+    "monthly_irradiation": "Enter expected solar radiation at location. Use PVGIS for an estimate."
+  },
+  "nve_requirements": {
+    "measurement_frequency": "Min. 1 time/hour",
+    "accuracy": "±5 %",
+    "data_availability": "Min. 97 % of the year",
+    "data_loggers": "2 pcs (each)",
+    "control_measurement": "Every 3rd year",
+    "source": "NVE Guide 3/2020 + Guidelines for Hydrological Investigations"
+  }
+}

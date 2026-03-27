@@ -3,19 +3,23 @@ from starlette.requests import Request
 from starlette.responses import Response
 
 from app.config import settings
-from app.db import async_session_factory
 from app.services.session_service import get_or_create_session
 
 
 class SessionMiddleware(BaseHTTPMiddleware):
-    """Assigns an anonymous session cookie to every browser request."""
+    """Assigns an anonymous session cookie to every browser request.
+
+    Uses app.state.async_session_factory to get DB sessions,
+    allowing tests to swap in a different factory.
+    """
 
     async def dispatch(
         self, request: Request, call_next: RequestResponseEndpoint
     ) -> Response:
         session_id = request.cookies.get(settings.session_cookie_name)
 
-        async with async_session_factory() as db:
+        session_factory = request.app.state.async_session_factory
+        async with session_factory() as db:
             try:
                 user_session = await get_or_create_session(db, session_id)
                 request.state.session_id = user_session.id

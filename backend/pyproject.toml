@@ -13,6 +13,7 @@ dependencies = [
     "aiosqlite>=0.20.0",
     "alembic>=1.14.0",
     "httpx>=0.28.0",
+    "openpyxl>=3.1.0",
     "orjson>=3.10.0",
     "python-multipart>=0.0.18",
     "pyjwt>=2.10.0",
@@ -35,6 +36,12 @@ line-length = 88
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "N", "W"]
+
+[tool.pyright]
+pythonVersion = "3.11"
+venvPath = "."
+venv = ".venv"
+executionEnvironments = [{ root = "." }]
 
 [build-system]
 requires = ["setuptools>=75.0"]
