@@ -1,7 +1,7 @@
 services:
-  backend:
+  hydroguide:
     build:
-      context: ./backend
+      context: .
       dockerfile: Dockerfile
     ports:
       - "8000:8000"
@@ -9,8 +9,7 @@ services:
       - hydroguide-data:/data
     environment:
       - DATABASE_URL=sqlite+aiosqlite:////data/hydroguide.db
-      - CORS_ORIGINS=http://localhost:5173,http://localhost:3000
-      - DEBUG=true
+      - DEBUG=false
     restart: unless-stopped
 
 volumes:
