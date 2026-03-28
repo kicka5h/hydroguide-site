@@ -5,6 +5,9 @@ dist/
 .env.*.local
 *.tsbuildinfo
 
+# Live API test cache
+.api_cache/
+
 # SQLite database files
 *.db
 *.db-journal
