@@ -39,7 +39,8 @@
       "Bash(HYDROGUIDE_API_URL=\"https://hydroguide.no/api/v1/recommendations\" HYDROGUIDE_API_KEY=\"hg_live_kytBhWEOH4Arc4jy3664JTM2n17mtCJBVajfysn75Jc\" python -m pytest tests/test_live_api.py -v)",
       "Bash(python3:*)",
       "Bash(git branch:*)",
-      "Bash(git fetch:*)"
+      "Bash(git fetch:*)",
+      "Bash(git config:*)"
     ]
   }
 }
