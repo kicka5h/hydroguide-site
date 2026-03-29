@@ -105,6 +105,48 @@ Results!B9 = IF(Input!B21="Yes", "Fuel cell (methanol)",
 
 This determines which power/consumption/price values are used in the energy balance calculations.
 
+### 4. Live API comparison (`test_live_api.py`)
+
+Validates our calculator against the production API at `https://hydroguide.no/api/v1/recommendations`. The production API uses a different payload schema (camelCase field names, Norwegian month abbreviations like `mai`/`okt`/`des`) and returns two energy-balance scenarios (fuel cell and diesel). Our calculator produces one scenario based on the recommended source, so the tests compare against the matching scenario.
+
+**Payload mapping:** `config_to_production_payload()` translates our `HydroConfigData` into the production schema:
+
+| Ours | Production API |
+|---|---|
+| `communication.has_4g_coverage` | `systemParameters.4gCoverage` |
+| `solar.panel_wattage_wp` | `solar.panelPowerWp` |
+| `monthly_irradiation.may` | `monthlySolarRadiation.mai` |
+| `power_budget[].power_w` + `consumption_wh_day` | `equipmentRows[].powerW` + `runtimeHoursPerDay` |
+| `fuel_cell.purchase_cost_kr` | `fuelCell.purchaseCost` |
+| `diesel_generator.fuel_consumption_l_kwh` | `diesel.fuelConsumptionPerKWh` |
+| `other_settings.assessment_horizon_years` | `other.evaluationHorizonYears` |
+
+**69 tests** covering:
+
+- **Solar production** (13) — exact match to 6 decimal places (same formula, no rounding divergence)
+- **Energy balance** (12) — monthly values within 0.1 kWh absolute tolerance
+- **Fuel consumption** (12) — monthly values within 0.5% relative tolerance
+- **Fuel cost** (12) — monthly values within 0.5% relative tolerance
+- **Annual totals** (4) — solar, fuel, fuel cost, generator hours
+- **TCO** (4) — FC TCO ~158,277 kr, Diesel TCO ~294,288 kr, source recommendation matches
+- **Equipment budget** (3) — 10 rows processed, names match, total Wh/day verified
+- **Scenario structure** (3) — both scenarios present with correct source power (82W FC, 6500W diesel)
+- **Rate limit** (1) — usage info present in response
+
+**Known rounding difference:** The production API rounds each equipment item's `powerW` to 2 decimal places before computing daily Wh (e.g. 0.042W → 0.04W), resulting in `totalWhPerDay` of 660.71 vs our exact 660.91. This propagates into the energy balance and fuel calculations, which is why those tests use 0.5% tolerance rather than exact matching.
+
+**API call budget:** 1 call total. The response is cached to `tests/.api_cache/` so repeat runs cost nothing. Delete the cache directory to force a fresh call.
+
+**Setup:**
+
+```bash
+export HYDROGUIDE_API_URL=https://hydroguide.no/api/v1/recommendations
+export HYDROGUIDE_API_KEY=<bearer token>
+pytest tests/test_live_api.py -v
+```
+
+Without the env vars, all 69 tests are automatically skipped.
+
 ## Running the tests
 
 ```bash
@@ -113,7 +155,7 @@ source .venv/bin/activate
 pytest tests/ -v
 ```
 
-Current results: **233 tests, all passing in under 0.5 seconds.**
+Current results: **302 tests, all passing** (233 offline + 69 live API).
 
 ## Adding new cross-validation scenarios
 
