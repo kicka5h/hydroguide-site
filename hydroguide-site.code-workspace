@@ -1,0 +1,66 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"python.defaultInterpreterPath": "/usr/bin/python3",
+		"files.exclude": {
+			"**/.git": true,
+			"**/.DS_Store": true,
+			"**/__pycache__": true,
+			"**/node_modules": true
+		},
+		"terminal.integrated.profiles.osx": {
+			"Claude": {
+				"path": "/bin/zsh",
+				"args": ["-c", "claude; exec zsh"],
+				"icon": "sparkle"
+			},
+			"Backend": {
+				"path": "/bin/zsh",
+				"icon": "server"
+			},
+			"Frontend": {
+				"path": "/bin/zsh",
+				"icon": "browser"
+			}
+		}
+	},
+	"tasks": {
+		"version": "2.0.0",
+		"tasks": [
+			{
+				"label": "Open All Terminals",
+				"dependsOn": ["Claude Terminal", "Backend Terminal", "Frontend Terminal"],
+				"dependsOrder": "parallel",
+				"runOptions": { "runOn": "folderOpen" }
+			},
+			{
+				"label": "Claude Terminal",
+				"type": "shell",
+				"command": "claude",
+				"isBackground": true,
+				"presentation": { "group": "terminals", "panel": "dedicated", "reveal": "always" },
+				"problemMatcher": []
+			},
+			{
+				"label": "Backend Terminal",
+				"type": "shell",
+				"command": "echo 'Backend ready'",
+				"isBackground": true,
+				"presentation": { "group": "terminals", "panel": "dedicated", "reveal": "always" },
+				"problemMatcher": []
+			},
+			{
+				"label": "Frontend Terminal",
+				"type": "shell",
+				"command": "echo 'Frontend ready'",
+				"isBackground": true,
+				"presentation": { "group": "terminals", "panel": "dedicated", "reveal": "always" },
+				"problemMatcher": []
+			}
+		]
+	}
+}

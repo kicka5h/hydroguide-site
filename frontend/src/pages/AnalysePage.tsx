@@ -5,6 +5,7 @@ import { deriveRecommendations, deriveRecommendedConfig } from "@/lib/recommenda
 import { EnergyBalanceChart } from "@/components/dashboard/EnergyBalanceChart";
 import { cn } from "@/lib/utils";
 import type { AnalysisRecommendation } from "@/types/config";
+import type { BackupSourceSelection } from "@/types/config";
 
 const fmtKr = (v: number) => new Intl.NumberFormat("nb-NO", { maximumFractionDigits: 0 }).format(v);
 
@@ -38,6 +39,8 @@ export function AnalysePage() {
   const config = useConfigStore((s) => s.config);
   const getEnergyBalance = useConfigStore((s) => s.getEnergyBalance);
   const getTco = useConfigStore((s) => s.getTco);
+  const selectedBackupSource = useConfigStore((s) => s.selectedBackupSource);
+  const setSelectedBackupSource = useConfigStore((s) => s.setSelectedBackupSource);
 
   const eb = getEnergyBalance();
   const tco = getTco();
@@ -100,6 +103,32 @@ export function AnalysePage() {
                 <span className="text-hydro-700">{label}</span>
                 <span className="font-medium text-hydro-900 text-right max-w-[60%]">{value}</span>
               </div>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* Backup Source Selection */}
+        <motion.div variants={fade} className="glass rounded-2xl p-6">
+          <h2 className="text-lg font-semibold text-hydro-900 mb-3">Vel reservekjelde</h2>
+          <p className="text-xs text-hydro-700 mb-3">Valet påverkar drivstofforbruk og kostnadskorta på Oversikt-sida.</p>
+          <div className="flex gap-3">
+            {([
+              { value: "fuel_cell" as BackupSourceSelection, label: "Brenselcelle (metanol)" },
+              { value: "diesel" as BackupSourceSelection, label: "Dieselaggregat" },
+            ]).map((opt) => (
+              <button
+                key={opt.value}
+                type="button"
+                onClick={() => setSelectedBackupSource(opt.value)}
+                className={cn(
+                  "px-4 py-2 rounded-xl text-sm font-medium transition-colors border-2",
+                  selectedBackupSource === opt.value
+                    ? "border-emerald-400 bg-emerald-50 text-emerald-800"
+                    : "border-hydro-200 text-hydro-700 hover:border-hydro-300"
+                )}
+              >
+                {opt.label}
+              </button>
             ))}
           </div>
         </motion.div>

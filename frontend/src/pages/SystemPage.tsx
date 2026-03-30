@@ -1,7 +1,8 @@
-import { Settings, Sun, Battery, Fuel, Truck, Sliders, Calendar } from "lucide-react";
+import { Settings, Sun, Battery, Zap, Calendar } from "lucide-react";
 import { motion } from "framer-motion";
 import { useConfigStore } from "@/stores/configStore";
-import { FormSection, NumberInput } from "@/components/ui/FormField";
+import { FormSection, NumberInput, BooleanToggle, SelectInput } from "@/components/ui/FormField";
+import type { AutonomyInputMode } from "@/types/config";
 
 const stagger = { hidden: {}, show: { transition: { staggerChildren: 0.08 } } };
 const fade = { hidden: { opacity: 0, y: 12 }, show: { opacity: 1, y: 0, transition: { duration: 0.35 } } };
@@ -18,98 +19,97 @@ export function SystemPage() {
   const setSolar = useConfigStore((s) => s.setSolar);
   const battery = useConfigStore((s) => s.config.battery);
   const setBattery = useConfigStore((s) => s.setBattery);
-  const fc = useConfigStore((s) => s.config.fuel_cell);
-  const setFuelCell = useConfigStore((s) => s.setFuelCell);
-  const dg = useConfigStore((s) => s.config.diesel_generator);
-  const setDieselGenerator = useConfigStore((s) => s.setDieselGenerator);
-  const other = useConfigStore((s) => s.config.other_settings);
-  const setOtherSettings = useConfigStore((s) => s.setOtherSettings);
+  const ops = useConfigStore((s) => s.config.operations);
+  const setOperations = useConfigStore((s) => s.setOperations);
   const irr = useConfigStore((s) => s.config.monthly_irradiation);
   const setIrr = useConfigStore((s) => s.setMonthlyIrradiation);
+
+  const autonomyUnit = ops.autonomy_input_mode === "target_days" ? "dagar" : "Ah";
+  const autonomyValue = ops.autonomy_input_mode === "target_days"
+    ? ops.target_autonomy_days
+    : ops.battery_bank_ah;
+  const handleAutonomyChange = (v: number | null) => {
+    if (ops.autonomy_input_mode === "target_days") {
+      setOperations({ target_autonomy_days: v });
+    } else {
+      setOperations({ battery_bank_ah: v });
+    }
+  };
 
   return (
     <div>
       <div className="flex items-center gap-3 mb-8">
         <Settings className="w-7 h-7 text-hydro-600" />
-        <h1 className="text-2xl font-bold text-hydro-900">Systemparametere</h1>
+        <h1 className="text-2xl font-bold text-hydro-900">Tekniske parametere</h1>
       </div>
 
       <motion.div className="space-y-6" variants={stagger} initial="hidden" animate="show">
+        {/* Solar Panel System + Solar Radiation */}
         <motion.div variants={fade}>
-          <FormSection title="Solcellepanel" icon={<Sun className="w-5 h-5 text-amber-500" />}>
-            <div className="grid grid-cols-2 gap-4">
-              <NumberInput label="Paneleffekt" value={solar.panel_wattage_wp} onChange={(v) => setSolar({ panel_wattage_wp: v })} unit="Wp" min={0} />
-              <NumberInput label="Tal panel" value={solar.panel_count} onChange={(v) => setSolar({ panel_count: v ?? 1 })} min={1} step={1} />
-              <NumberInput label="Systemverknadsgrad" value={solar.system_efficiency} onChange={(v) => setSolar({ system_efficiency: v ?? 0.8 })} min={0} max={1} step={0.05} />
-              <NumberInput label="Forventa levetid" value={solar.lifespan_years} onChange={(v) => setSolar({ lifespan_years: v ?? 25 })} unit="år" min={1} step={1} />
+          <FormSection title="Solcellesystem og solinnstråling" icon={<Sun className="w-5 h-5 text-amber-500" />}>
+            <div className="grid grid-cols-1 md:grid-cols-[minmax(0,0.82fr)_minmax(0,1.18fr)] gap-6">
+              <div className="space-y-4">
+                <NumberInput label="Paneleffekt" value={solar.panel_wattage_wp} onChange={(v) => setSolar({ panel_wattage_wp: v })} unit="Wp" min={0} />
+                <NumberInput label="Tal panel" value={solar.panel_count} onChange={(v) => setSolar({ panel_count: v ?? 1 })} unit="stk" min={1} step={1} />
+                <NumberInput label="Systemverknadsgrad" value={solar.system_efficiency} onChange={(v) => setSolar({ system_efficiency: v ?? 0.8 })} min={0} max={1} step={0.05} guidance="Samla verknadsgrad for panel, regulator, kabel og lading. Oppgje som verdi frå 0 til 1." />
+              </div>
+              <div>
+                <p className="text-sm font-medium text-hydro-700 mb-3">Månadleg solinnstråling</p>
+                <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
+                  {MONTHS.map((m) => (
+                    <NumberInput
+                      key={m.key}
+                      label={m.label}
+                      value={(irr as unknown as Record<string, number>)[m.key]}
+                      onChange={(v) => setIrr({ [m.key]: v ?? 0 })}
+                      unit="kWh/m²"
+                      min={0}
+                      step={0.1}
+                    />
+                  ))}
+                </div>
+              </div>
             </div>
           </FormSection>
         </motion.div>
 
+        {/* Battery Bank */}
         <motion.div variants={fade}>
           <FormSection title="Batteribank" icon={<Battery className="w-5 h-5 text-hydro-500" />}>
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <SelectInput
+                label="Autonomi oppgjeve som"
+                value={ops.autonomy_input_mode}
+                onChange={(v) => setOperations({ autonomy_input_mode: (v || "manual_ah") as AutonomyInputMode })}
+                options={[
+                  { value: "target_days", label: "Tal dagar" },
+                  { value: "manual_ah", label: "Batteribankstorleik (Ah)" },
+                ]}
+              />
               <NumberInput label="Nominell spenning" value={battery.voltage_v} onChange={(v) => setBattery({ voltage_v: v ?? 12.8 })} unit="V" min={0} />
-              <NumberInput label="Maks utladingsdjupn" value={battery.max_dod} onChange={(v) => setBattery({ max_dod: v ?? 0.8 })} min={0} max={1} step={0.05} />
-              <NumberInput label="Sykluslevetid" value={battery.cycle_lifespan} onChange={(v) => setBattery({ cycle_lifespan: v ?? 6000 })} min={0} step={100} />
+              <NumberInput
+                label="Ønskt autonomi"
+                value={autonomyValue}
+                onChange={handleAutonomyChange}
+                unit={autonomyUnit}
+                min={0}
+                step={ops.autonomy_input_mode === "target_days" ? 1 : undefined}
+                guidance="Vel først om autonomi er oppgjeve i Ah eller dagar."
+              />
+              <NumberInput label="Maks utladingsdjupn (DoD)" value={battery.max_dod} onChange={(v) => setBattery({ max_dod: v ?? 0.8 })} min={0} max={1} step={0.05} />
             </div>
           </FormSection>
         </motion.div>
 
+        {/* Reserve Source */}
         <motion.div variants={fade}>
-          <FormSection title="Brenselcelle" icon={<Fuel className="w-5 h-5 text-emerald-500" />}>
-            <div className="grid grid-cols-2 gap-4">
-              <NumberInput label="Innkjøpskostnad" value={fc.purchase_cost_kr} onChange={(v) => setFuelCell({ purchase_cost_kr: v })} unit="kr" min={0} />
-              <NumberInput label="Nominell effekt" value={fc.power_w} onChange={(v) => setFuelCell({ power_w: v })} unit="W" min={0} />
-              <NumberInput label="Drivstofforbruk" value={fc.fuel_consumption_l_kwh} onChange={(v) => setFuelCell({ fuel_consumption_l_kwh: v })} unit="l/kWh" min={0} step={0.1} />
-              <NumberInput label="Drivstoffpris (metanol)" value={fc.fuel_price_kr_l} onChange={(v) => setFuelCell({ fuel_price_kr_l: v })} unit="kr/l" min={0} />
-              <NumberInput label="Forventa levetid" value={fc.lifespan_hours} onChange={(v) => setFuelCell({ lifespan_hours: v })} unit="timar" min={0} />
-              <NumberInput label="Årlege vedlikehaldskostnadar" value={fc.annual_maintenance_kr} onChange={(v) => setFuelCell({ annual_maintenance_kr: v })} unit="kr/år" min={0} />
-            </div>
-          </FormSection>
-        </motion.div>
-
-        <motion.div variants={fade}>
-          <FormSection title="Dieselaggregat" icon={<Truck className="w-5 h-5 text-gray-500" />}>
-            <div className="grid grid-cols-2 gap-4">
-              <NumberInput label="Innkjøpskostnad" value={dg.purchase_cost_kr} onChange={(v) => setDieselGenerator({ purchase_cost_kr: v })} unit="kr" min={0} />
-              <NumberInput label="Nominell effekt" value={dg.power_w} onChange={(v) => setDieselGenerator({ power_w: v })} unit="W" min={0} />
-              <NumberInput label="Drivstofforbruk" value={dg.fuel_consumption_l_kwh} onChange={(v) => setDieselGenerator({ fuel_consumption_l_kwh: v })} unit="l/kWh" min={0} step={0.1} />
-              <NumberInput label="Drivstoffpris (diesel)" value={dg.fuel_price_kr_l} onChange={(v) => setDieselGenerator({ fuel_price_kr_l: v })} unit="kr/l" min={0} />
-              <NumberInput label="Forventa levetid" value={dg.lifespan_hours} onChange={(v) => setDieselGenerator({ lifespan_hours: v })} unit="timar" min={0} />
-              <NumberInput label="Årlege vedlikehaldskostnadar" value={dg.annual_maintenance_kr} onChange={(v) => setDieselGenerator({ annual_maintenance_kr: v })} unit="kr/år" min={0} />
-            </div>
-          </FormSection>
-        </motion.div>
-
-        <motion.div variants={fade}>
-          <FormSection title="Andre innstillingar" icon={<Sliders className="w-5 h-5 text-hydro-500" />}>
-            <div className="grid grid-cols-3 gap-4">
-              <NumberInput label="CO₂-faktor metanol" value={other.co2_factor_methanol} onChange={(v) => setOtherSettings({ co2_factor_methanol: v ?? 1.088 })} unit="kg/l" step={0.001} />
-              <NumberInput label="CO₂-faktor diesel" value={other.co2_factor_diesel} onChange={(v) => setOtherSettings({ co2_factor_diesel: v ?? 2.68 })} unit="kg/l" step={0.01} />
-              <NumberInput label="Vurderingshorisont" value={other.assessment_horizon_years} onChange={(v) => setOtherSettings({ assessment_horizon_years: v ?? 10 })} unit="år" min={1} max={30} step={1} />
-            </div>
-          </FormSection>
-        </motion.div>
-
-        <motion.div variants={fade}>
-          <FormSection title="Månadleg solinnstråling" icon={<Calendar className="w-5 h-5 text-amber-500" />}>
-            <p className="text-xs text-hydro-700 -mt-2 mb-3">
-              Forventa solinnstråling i kWh/m² per månad. Bruk PVGIS for estimat.
-            </p>
-            <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-3">
-              {MONTHS.map((m) => (
-                <NumberInput
-                  key={m.key}
-                  label={m.label}
-                  value={(irr as unknown as Record<string, number>)[m.key]}
-                  onChange={(v) => setIrr({ [m.key]: v ?? 0 })}
-                  unit="kWh/m²"
-                  min={0}
-                  step={0.1}
-                />
-              ))}
-            </div>
+          <FormSection title="Reservekjelde" icon={<Zap className="w-5 h-5 text-emerald-500" />}>
+            <BooleanToggle
+              label="Har systemet ei reservekjelde?"
+              value={ops.has_reserve_source}
+              onChange={(v) => setOperations({ has_reserve_source: v })}
+              guidance="Oppgje om systemet skal evaluerast med ei reservekjelde."
+            />
           </FormSection>
         </motion.div>
       </motion.div>

@@ -49,7 +49,11 @@
       "Bash(chmod:*)",
       "Bash(for page:*)",
       "Bash(do)",
-      "Bash(echo \"=== /$page ===\")"
+      "Bash(echo \"=== /$page ===\")",
+      "WebFetch(domain:hydroguide.no)",
+      "Bash(npx vite:*)",
+      "Bash(ls /Users/kickash/hydroguide-site/backend/*.py)",
+      "Bash(node:*)"
     ]
   }
 }

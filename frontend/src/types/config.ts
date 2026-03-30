@@ -14,12 +14,34 @@ export interface FacilityParams {
   difficult_access: boolean | null;
   linear_flow: boolean | null;
   sediment_or_surge: boolean | null;
+  // New fields from hydroguide.no questionnaire
+  facility_status: string;
+  intake_type: string;
+  flow_type: string;
+  large_flow_difference: boolean | null;
+  can_divert_to_frost_free: boolean | null;
+  frequent_adjustment: boolean | null;
+  natural_measurement_profile: boolean | null;
+  artificial_measurement_profile: boolean | null;
+  automatic_data_transmission: boolean | null;
+  public_verification: boolean | null;
+  release_when_not_operating: boolean | null;
+  flow_collectible_in_container: boolean | null;
+  turbulent_for_tracer: boolean | null;
+  uniform_for_area_velocity: boolean | null;
+  suitable_for_verification: boolean | null;
 }
+
+export type AutonomyInputMode = "manual_ah" | "target_days";
+export type BackupSourceSelection = "fuel_cell" | "diesel";
 
 export interface OperationsParams {
   inspections_per_year: number | null;
   battery_bank_ah: number | null;
   zero_emission_desired: boolean | null;
+  autonomy_input_mode: AutonomyInputMode;
+  target_autonomy_days: number | null;
+  has_reserve_source: boolean | null;
 }
 
 export interface SolarParams {

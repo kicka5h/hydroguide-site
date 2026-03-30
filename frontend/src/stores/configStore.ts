@@ -12,6 +12,7 @@ import type {
   MonthlyIrradiation,
   PowerBudgetItem,
   QuestionnaireData,
+  BackupSourceSelection,
 } from "@/types/config";
 import type { EnergyBalanceResult, TcoComparison, RecommendedConfig } from "@/types/reference";
 import { calculateEnergyBalance, calculateTco, dailyConsumptionWh } from "@/lib/calculations";
@@ -19,8 +20,8 @@ import { deriveRecommendedConfig } from "@/lib/recommendations";
 
 const DEFAULT_CONFIG: HydroConfigData = {
   communication: { has_4g_coverage: null, has_nbiot_coverage: null, has_line_of_sight: null, requires_two_way_control: null },
-  facility: { release_method: "", has_fish_passage: null, minimum_flow_ls: null, low_conductivity: null, ice_problems: null, difficult_access: null, linear_flow: null, sediment_or_surge: null },
-  operations: { inspections_per_year: null, battery_bank_ah: null, zero_emission_desired: null },
+  facility: { release_method: "", has_fish_passage: null, minimum_flow_ls: null, low_conductivity: null, ice_problems: null, difficult_access: null, linear_flow: null, sediment_or_surge: null, facility_status: "", intake_type: "", flow_type: "", large_flow_difference: null, can_divert_to_frost_free: null, frequent_adjustment: null, natural_measurement_profile: null, artificial_measurement_profile: null, automatic_data_transmission: null, public_verification: null, release_when_not_operating: null, flow_collectible_in_container: null, turbulent_for_tracer: null, uniform_for_area_velocity: null, suitable_for_verification: null },
+  operations: { inspections_per_year: null, battery_bank_ah: null, zero_emission_desired: null, autonomy_input_mode: "manual_ah" as const, target_autonomy_days: null, has_reserve_source: null },
   solar: { panel_wattage_wp: null, panel_count: 1, system_efficiency: 0.8, lifespan_years: 25 },
   battery: { voltage_v: 12.8, max_dod: 0.8, cycle_lifespan: 6000 },
   fuel_cell: { purchase_cost_kr: null, power_w: null, fuel_consumption_l_kwh: null, fuel_price_kr_l: null, lifespan_hours: null, annual_maintenance_kr: null },
@@ -36,6 +37,14 @@ export interface LocationData {
   lng: number | null;
 }
 
+export interface SavedConfig {
+  id: string;
+  name: string;
+  config: HydroConfigData;
+  location: LocationData;
+  selectedBackupSource: BackupSourceSelection;
+}
+
 interface ConfigStore {
   config: HydroConfigData;
   referenceConfig: HydroConfigData | null;
@@ -46,6 +55,20 @@ interface ConfigStore {
   initialized: boolean;
   loading: boolean;
   error: string | null;
+
+  projectName: string;
+  setProjectName: (name: string) => void;
+
+  selectedBackupSource: BackupSourceSelection;
+  setSelectedBackupSource: (source: BackupSourceSelection) => void;
+
+  savedConfigs: SavedConfig[];
+  activeConfigId: string | null;
+  saveConfig: () => void;
+  loadConfig: (id: string) => void;
+  newConfig: () => void;
+
+  getBatteryAutonomyDays: () => number;
 
   initialize: () => Promise<void>;
   resetToReference: () => void;
@@ -80,6 +103,73 @@ export const useConfigStore = create<ConfigStore>((set, get) => ({
   initialized: false,
   loading: false,
   error: null,
+
+  projectName: "Nytt prosjekt",
+  setProjectName: (name) => set({ projectName: name }),
+
+  selectedBackupSource: "fuel_cell",
+  setSelectedBackupSource: (source) => set({ selectedBackupSource: source }),
+
+  savedConfigs: [],
+  activeConfigId: null,
+
+  saveConfig: () => {
+    const s = get();
+    const id = s.activeConfigId ?? crypto.randomUUID();
+    const entry: SavedConfig = {
+      id,
+      name: s.projectName,
+      config: JSON.parse(JSON.stringify(s.config)),
+      location: { ...s.location },
+      selectedBackupSource: s.selectedBackupSource,
+    };
+    set((prev) => {
+      const existing = prev.savedConfigs.findIndex((c) => c.id === id);
+      const list = [...prev.savedConfigs];
+      if (existing >= 0) list[existing] = entry;
+      else list.push(entry);
+      return { savedConfigs: list, activeConfigId: id };
+    });
+  },
+
+  loadConfig: (id) => {
+    const saved = get().savedConfigs.find((c) => c.id === id);
+    if (!saved) return;
+    set({
+      config: JSON.parse(JSON.stringify(saved.config)),
+      location: { ...saved.location },
+      projectName: saved.name,
+      selectedBackupSource: saved.selectedBackupSource,
+      activeConfigId: id,
+    });
+  },
+
+  newConfig: () => {
+    const ref = get().referenceConfig;
+    set({
+      config: ref ? JSON.parse(JSON.stringify(ref)) : JSON.parse(JSON.stringify(DEFAULT_CONFIG)),
+      location: { name: "", lat: null, lng: null },
+      projectName: "Nytt prosjekt",
+      selectedBackupSource: "fuel_cell",
+      activeConfigId: null,
+    });
+  },
+
+  getBatteryAutonomyDays: () => {
+    const { config } = get();
+    const dailyWh = dailyConsumptionWh(config);
+    if (dailyWh <= 0) return 0;
+    const voltage = config.battery.voltage_v || 12.8;
+    const dod = config.battery.max_dod || 0.8;
+
+    if (config.operations.autonomy_input_mode === "manual_ah") {
+      const ah = config.operations.battery_bank_ah ?? 0;
+      const usableWh = ah * voltage * dod;
+      return usableWh / dailyWh;
+    } else {
+      return config.operations.target_autonomy_days ?? 0;
+    }
+  },
 
   initialize: async () => {
     if (get().initialized || get().loading) return;
@@ -165,9 +255,9 @@ export const useConfigStore = create<ConfigStore>((set, get) => ({
       return { config: { ...s.config, power_budget: items } };
     }),
 
-  getEnergyBalance: () => calculateEnergyBalance(get().config),
+  getEnergyBalance: () => calculateEnergyBalance(get().config, get().selectedBackupSource),
   getTco: () => {
-    const eb = calculateEnergyBalance(get().config);
+    const eb = calculateEnergyBalance(get().config, get().selectedBackupSource);
     return calculateTco(get().config, eb.total_fuel_cost_kr);
   },
   getRecommendedConfig: () => deriveRecommendedConfig(get().config),
