@@ -62,8 +62,9 @@ app.include_router(analyze.router)
 if STATIC_DIR.is_dir():
     app.mount("/assets", StaticFiles(directory=STATIC_DIR / "assets"), name="assets")
 
+    @app.get("/")
     @app.get("/{path:path}")
-    async def serve_spa(request: Request, path: str):
+    async def serve_spa(request: Request, path: str = ""):
         """Serve static files or fall back to index.html for SPA routing."""
         file_path = STATIC_DIR / path
         if file_path.is_file():
