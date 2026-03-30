@@ -40,7 +40,16 @@
       "Bash(python3:*)",
       "Bash(git branch:*)",
       "Bash(git fetch:*)",
-      "Bash(git config:*)"
+      "Bash(git config:*)",
+      "Bash(for f:*)",
+      "Bash(do sed:*)",
+      "Bash(done)",
+      "Bash(node -e \":*)",
+      "Bash(npx lighthouse:*)",
+      "Bash(chmod:*)",
+      "Bash(for page:*)",
+      "Bash(do)",
+      "Bash(echo \"=== /$page ===\")"
     ]
   }
 }

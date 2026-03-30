@@ -1,0 +1,14 @@
+HydroGuide Lighthouse Audit - Sun Mar 29 17:42:02 PDT 2026
+========================================
+
+/landing         Perf:  99  A11y: 100  BP: 100  SEO: 100  Contrast fails: 0
+/oversikt        Perf:  98  A11y: 100  BP: 100  SEO: 100  Contrast fails: 0
+/parametere      Perf:  99  A11y: 100  BP: 100  SEO: 100  Contrast fails: 0
+/system          Perf:  99  A11y: 100  BP: 100  SEO: 100  Contrast fails: 0
+/effektbudsjett  Perf:  99  A11y: 100  BP: 100  SEO: 100  Contrast fails: 0
+/analyse         Perf:  99  A11y: 100  BP: 100  SEO: 100  Contrast fails: 0
+/siktlinje       Perf:  99  A11y: 100  BP: 100  SEO: 100  Contrast fails: 0
+/dokumentasjon   Perf:  99  A11y: 100  BP: 100  SEO: 100  Contrast fails: 0
+/api-docs        Perf:   0  A11y:   0  BP:   0  SEO:   0  Contrast fails: 0
+
+HTML reports saved to lighthouse-reports/*.report.html

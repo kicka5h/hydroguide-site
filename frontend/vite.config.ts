@@ -29,6 +29,12 @@ export default defineConfig({
           if (id.includes("node_modules/framer-motion")) {
             return "animation";
           }
+          if (id.includes("node_modules/recharts") || id.includes("node_modules/d3-")) {
+            return "charts";
+          }
+          if (id.includes("node_modules/leaflet")) {
+            return "leaflet";
+          }
         },
       },
     },
@@ -36,6 +42,14 @@ export default defineConfig({
   server: {
     proxy: {
       "/api": {
+        target: "http://localhost:8000",
+        changeOrigin: true,
+      },
+      "/docs": {
+        target: "http://localhost:8000",
+        changeOrigin: true,
+      },
+      "/openapi.json": {
         target: "http://localhost:8000",
         changeOrigin: true,
       },
