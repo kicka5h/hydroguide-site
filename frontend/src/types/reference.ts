@@ -1,6 +1,7 @@
 export interface MonthlyEnergyBalance {
   month: string;
   days: number;
+  load_kwh: number;
   solar_production_kwh: number;
   energy_balance_kwh: number;
   generator_hours: number;
@@ -11,6 +12,8 @@ export interface MonthlyEnergyBalance {
 export interface EnergyBalanceResult {
   monthly: MonthlyEnergyBalance[];
   total_solar_production_kwh: number;
+  total_load_kwh: number;
+  total_secondary_kwh: number;
   total_energy_balance_kwh: number;
   total_generator_hours: number;
   total_fuel_liters: number;

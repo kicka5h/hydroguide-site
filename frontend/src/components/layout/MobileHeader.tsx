@@ -17,8 +17,8 @@ import {
 
 const NAV_ITEMS = [
   { to: "/oversikt", label: "Oversikt", icon: LayoutDashboard },
-  { to: "/parametere", label: "Parametere", icon: ClipboardList },
-  { to: "/system", label: "System", icon: Settings },
+  { to: "/prosjektgrunnlag", label: "Prosjektgrunnlag", icon: ClipboardList },
+  { to: "/teknisk-parametre", label: "Teknisk Parametre", icon: Settings },
   { to: "/effektbudsjett", label: "Effektbudsjett", icon: Zap },
   { to: "/analyse", label: "Analyse", icon: BarChart3 },
   { to: "/siktlinje", label: "Siktlinje", icon: Radio },
@@ -52,14 +52,14 @@ export function MobileHeader() {
                   onClick={() => setOpen(false)}
                   className={({ isActive }) =>
                     cn(
-                      "flex items-center gap-3 px-3 py-3 rounded-lg text-sm transition-colors",
+                      "flex items-center gap-3 px-3 py-3 rounded-lg text-base transition-colors",
                       isActive
                         ? "bg-hydro-700/50 text-white"
                         : "text-hydro-200 hover:bg-hydro-800"
                     )
                   }
                 >
-                  <item.icon className="w-5 h-5" />
+                  <item.icon className="w-6 h-6" />
                   <span>{item.label}</span>
                 </NavLink>
               </li>

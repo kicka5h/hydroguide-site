@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Sun, Fuel, Zap, Clock } from "lucide-react";
 import type { EnergyBalanceResult } from "@/types/reference";
 import { useConfigStore } from "@/stores/configStore";
+import { cn } from "@/lib/utils";
 
 const fmt = (v: number, decimals = 1) =>
   new Intl.NumberFormat("nb-NO", {
@@ -39,10 +40,8 @@ export function MetricCards({ energy_balance }: Props) {
     : null;
 
   // Backup source details
+  const hasSecondary = config.operations.has_reserve_source !== false;
   const backupLabel = selectedBackupSource === "fuel_cell" ? "Brenselcelle" : "Dieselaggregat";
-  const backupPowerW = selectedBackupSource === "fuel_cell"
-    ? (config.fuel_cell.power_w ?? 0)
-    : (config.diesel_generator.power_w ?? 0);
 
   // Fuel type label for Drivstofforbruk
   const fuelLabel = selectedBackupSource === "fuel_cell" ? "metanol" : "diesel";
@@ -62,28 +61,31 @@ export function MetricCards({ energy_balance }: Props) {
 
   const cards = [
     {
-      label: "Solproduksjon",
+      label: "Solcelleproduksjon",
       value: `${fmt(energy_balance.total_solar_production_kwh)} kWh`,
       sub: "per år",
       icon: Sun,
       color: "text-hydro-500",
       bg: "bg-hydro-50",
+      muted: false,
     },
     {
       label: "Drivstofforbruk",
-      value: `${fmt(energy_balance.total_fuel_liters)} liter ${fuelLabel}`,
-      sub: "per år",
+      value: hasSecondary ? `${fmt(energy_balance.total_fuel_liters)} liter ${fuelLabel}` : "—",
+      sub: hasSecondary ? "per år" : "Ingen sekundær energikilde",
       icon: Fuel,
       color: "text-amber-500",
       bg: "bg-amber-50",
+      muted: !hasSecondary,
     },
     {
-      label: "Reservekjelde",
-      value: backupLabel,
-      sub: backupPowerW > 0 ? `${fmt(backupPowerW, 0)} W` : "Ikkje konfigurert",
+      label: backupLabel,
+      value: hasSecondary ? `${fmt(energy_balance.total_secondary_kwh)} kWh` : "—",
+      sub: hasSecondary ? "per år" : "Ingen sekundær energikilde",
       icon: Zap,
-      color: selectedBackupSource === "fuel_cell" ? "text-emerald-500" : "text-gray-500",
-      bg: selectedBackupSource === "fuel_cell" ? "bg-emerald-50" : "bg-gray-50",
+      color: "text-emerald-500",
+      bg: "bg-emerald-50",
+      muted: !hasSecondary,
     },
     {
       label: "Autonomi",
@@ -92,6 +94,7 @@ export function MetricCards({ energy_balance }: Props) {
       icon: Clock,
       color: "text-blue-500",
       bg: "bg-blue-50",
+      muted: false,
     },
   ];
 
@@ -106,7 +109,10 @@ export function MetricCards({ energy_balance }: Props) {
         <motion.div
           key={card.label}
           variants={item}
-          className="glass rounded-2xl p-5 flex flex-col gap-3"
+          className={cn(
+            "glass rounded-2xl p-5 flex flex-col gap-3 transition-opacity",
+            card.muted && "opacity-50"
+          )}
         >
           <div className="flex items-center gap-2">
             <div className={`${card.bg} ${card.color} p-2 rounded-xl`}>

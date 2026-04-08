@@ -41,8 +41,8 @@ export function App() {
           <Route path="/" element={<LandingPage />} />
           <Route element={<AppLayout />}>
             <Route path="/oversikt" element={<DashboardPage />} />
-            <Route path="/parametere" element={<ParameterePage />} />
-            <Route path="/system" element={<SystemPage />} />
+            <Route path="/prosjektgrunnlag" element={<ParameterePage />} />
+            <Route path="/teknisk-parametre" element={<SystemPage />} />
             <Route path="/effektbudsjett" element={<EffektbudsjettPage />} />
             <Route path="/analyse" element={<AnalysePage />} />
             <Route path="/siktlinje" element={<SiktlinjePage />} />

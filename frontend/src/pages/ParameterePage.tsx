@@ -20,7 +20,7 @@ export function ParameterePage() {
     <div>
       <div className="flex items-center gap-3 mb-8">
         <ClipboardList className="w-7 h-7 text-hydro-600" />
-        <h1 className="text-2xl font-bold text-hydro-900">Prosjektgrunnlag og nøkkelspørsmål</h1>
+        <h1 className="text-2xl font-bold text-hydro-900">Prosjektgrunnlag</h1>
       </div>
 
       <motion.div className="space-y-6" variants={stagger} initial="hidden" animate="show">

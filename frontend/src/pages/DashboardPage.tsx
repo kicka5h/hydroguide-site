@@ -197,7 +197,7 @@ export function DashboardPage() {
           </button>
           <button
             onClick={resetToReference}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs text-hydro-700 hover:text-hydro-900 hover:bg-hydro-50 transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs text-red-600 hover:text-red-700 hover:bg-red-50 border border-transparent hover:border-red-200 transition-colors"
           >
             <RotateCcw className="w-3.5 h-3.5" />
             Nullstill

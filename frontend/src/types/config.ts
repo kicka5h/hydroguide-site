@@ -100,6 +100,7 @@ export interface PowerBudgetItem {
   enabled: boolean;
   name: string;
   power_w: number;
+  hours_per_day: number;
   consumption_wh_day: number;
   consumption_ah_day: number;
   consumption_wh_week: number;

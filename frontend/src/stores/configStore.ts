@@ -179,6 +179,11 @@ export const useConfigStore = create<ConfigStore>((set, get) => ({
       if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
       const data = await res.json();
       const config = data.config as HydroConfigData;
+      // Backfill frontend-only fields not present in backend payloads.
+      config.power_budget = (config.power_budget ?? []).map((item) => ({
+        ...item,
+        hours_per_day: item.hours_per_day ?? 24,
+      }));
       set({
         config,
         referenceConfig: config,
@@ -226,7 +231,7 @@ export const useConfigStore = create<ConfigStore>((set, get) => ({
         ...s.config,
         power_budget: [
           ...s.config.power_budget,
-          { enabled: true, name: "", power_w: 0, consumption_wh_day: 0, consumption_ah_day: 0, consumption_wh_week: 0, consumption_ah_week: 0 },
+          { enabled: true, name: "", power_w: 0, hours_per_day: 24, consumption_wh_day: 0, consumption_ah_day: 0, consumption_wh_week: 0, consumption_ah_week: 0 },
         ],
       },
     })),
@@ -243,10 +248,12 @@ export const useConfigStore = create<ConfigStore>((set, get) => ({
     set((s) => {
       const items = [...s.config.power_budget];
       const item = { ...items[index], ...patch };
-      // Auto-derive consumption from power_w
-      if ("power_w" in patch) {
+      // Backfill hours_per_day for legacy items loaded from older configs.
+      if (item.hours_per_day == null) item.hours_per_day = 24;
+      // Auto-derive consumption when either power_w or hours_per_day changes.
+      if ("power_w" in patch || "hours_per_day" in patch) {
         const v = s.config.battery.voltage_v || 12.8;
-        item.consumption_wh_day = item.power_w * 24;
+        item.consumption_wh_day = item.power_w * item.hours_per_day;
         item.consumption_ah_day = item.consumption_wh_day / v;
         item.consumption_wh_week = item.consumption_wh_day * 7;
         item.consumption_ah_week = item.consumption_ah_day * 7;
@@ -258,7 +265,7 @@ export const useConfigStore = create<ConfigStore>((set, get) => ({
   getEnergyBalance: () => calculateEnergyBalance(get().config, get().selectedBackupSource),
   getTco: () => {
     const eb = calculateEnergyBalance(get().config, get().selectedBackupSource);
-    return calculateTco(get().config, eb.total_fuel_cost_kr);
+    return calculateTco(get().config, eb.total_secondary_kwh);
   },
   getRecommendedConfig: () => deriveRecommendedConfig(get().config),
   getDailyWh: () => dailyConsumptionWh(get().config),
